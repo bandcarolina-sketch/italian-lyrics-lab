@@ -450,7 +450,8 @@
       const [attempts, setAttempts] = useState(0);
 
       const isOpen = song.difficulty !== "Beginner";
-      const warmupCount = song.difficulty === "Beginner" ? 2 : 0;
+      const isCustom = song.id.startsWith("custom-");
+      const warmupCount = (!isCustom && song.difficulty === "Beginner") ? 2 : 0;
 
       const exerciseLines = song.lines.slice(warmupCount);
       const totalBlanks = exerciseLines.reduce((s, l) => s + l.blanks.length, 0);
@@ -591,11 +592,12 @@
     }
 
     /* ── Custom Song Editor ── */
-    function CustomEditor({ onSave, saved }) {
+    function CustomEditor({ onSave, onFinish }) {
       const [step, setStep] = useState(1);
       const [title, setTitle] = useState("");
       const [artist, setArtist] = useState("");
       const [spotifyId, setSpotifyId] = useState("");
+      const [mode, setMode] = useState("type");
       const [rawLyrics, setRawLyrics] = useState("");
       const [parsedLines, setParsedLines] = useState([]);
       const [selectedBlanks, setSelectedBlanks] = useState({});
@@ -633,10 +635,37 @@
       };
 
       const buildSong = () => {
+        // Collect all blank words for generating distractors
+        const allBlankWords = [];
+        parsedLines.forEach((pl, li) => {
+          if (!restLines[li]) {
+            pl.words.forEach((w, wi) => {
+              if (selectedBlanks[`${li}-${wi}`]) allBlankWords.push(w);
+            });
+          }
+        });
+
+        const getOptions = (correctWord) => {
+          if (mode === "type") return [];
+          // Pick 2 random distractors from other blanks, or nearby words
+          const others = allBlankWords.filter(w => w.toLowerCase() !== correctWord.toLowerCase());
+          const shuffled = others.sort(() => Math.random() - 0.5).slice(0, 2);
+          const opts = [correctWord, ...shuffled];
+          // If not enough distractors, pad with nearby words from the song
+          while (opts.length < 3) {
+            const randomLine = parsedLines[Math.floor(Math.random() * parsedLines.length)];
+            const randomWord = randomLine.words[Math.floor(Math.random() * randomLine.words.length)];
+            if (!opts.includes(randomWord)) opts.push(randomWord);
+          }
+          return opts.sort(() => Math.random() - 0.5);
+        };
+
         const lines = parsedLines.map((pl, li) => {
-          if (restLines[li]) return null;
-          const blanks = pl.words
-            .map((w, wi) => selectedBlanks[`${li}-${wi}`] ? { word: w, hint: "fill in", options: [] } : null)
+          const isRest = restLines[li];
+          const blanks = isRest ? [] : pl.words
+            .map((w, wi) => selectedBlanks[`${li}-${wi}`]
+              ? { word: w, hint: "fill in", options: getOptions(w) }
+              : null)
             .filter(Boolean);
           return {
             italian: pl.text,
@@ -651,15 +680,12 @@
           artist: artist || "Unknown",
           match: "Your custom exercise",
           spotifyId: spotifyId || "",
-          difficulty: "Intermediate",
+          difficulty: mode === "type" ? "Intermediate" : "Beginner",
           grammar: "",
           vocab: [],
           lines,
         };
         onSave(song);
-        // Reset
-        setStep(1); setTitle(""); setArtist(""); setSpotifyId("");
-        setRawLyrics(""); setParsedLines([]); setSelectedBlanks({}); setRestLines({});
       };
 
       const blankCount = Object.keys(selectedBlanks).length;
@@ -694,6 +720,24 @@
               <p style={{ fontSize: 13, color: "#b8923c", marginBottom: 20, lineHeight: 1.6 }}>
                 To find this: open the song on Spotify → click ··· → Share → Embed track → copy the ID from the URL after /track/ and before the ?
               </p>
+
+              <label style={{ fontSize: 13, color: "#9e9890", display: "block", marginBottom: 8 }}>Exercise mode</label>
+              <div style={{ display: "flex", gap: 0, marginBottom: 24, borderRadius: 4, overflow: "hidden", border: "1.5px solid #d4d0c8" }}>
+                {[
+                  { key: "choices", label: "Multiple choice", desc: "Pick from options" },
+                  { key: "type", label: "Free text", desc: "Type the answer" },
+                ].map(({ key, label, desc }) => (
+                  <button key={key} onClick={() => setMode(key)} style={{
+                    flex: 1, padding: "12px 8px", border: "none", cursor: "pointer",
+                    background: mode === key ? "#2c2a26" : "#fff",
+                    color: mode === key ? "#f5f4f1" : "#9e9890",
+                    fontSize: 14, transition: "all 0.15s", textAlign: "center",
+                  }}>
+                    <div style={{ fontWeight: 500 }}>{label}</div>
+                    <div style={{ fontSize: 11, marginTop: 2, opacity: 0.7 }}>{desc}</div>
+                  </button>
+                ))}
+              </div>
 
               <button onClick={() => setStep(2)} disabled={!title.trim()}
                 style={{
@@ -806,23 +850,24 @@
               <div style={{ fontSize: 48, marginBottom: 16 }}>✓</div>
               <h3 style={{ fontSize: 20, fontWeight: 500, marginBottom: 8 }}>Exercise created!</h3>
               <p style={{ fontSize: 15, color: "#9e9890", marginBottom: 24 }}>
-                Your exercise has been added to the "My Songs" section below. Scroll down to try it out.
+                Your exercise is ready. Head to the "My Songs" tab to try it out.
               </p>
-              <button onClick={() => setStep(1)} style={{
-                background: "#2c2a26", color: "#f5f4f1", border: "none",
-                padding: "12px 28px", borderRadius: 4, fontSize: 14, cursor: "pointer",
-                textTransform: "uppercase", letterSpacing: 1.5,
-              }}>Create another</button>
-            </div>
-          )}
-
-          {/* Saved custom songs */}
-          {saved.length > 0 && step !== 4 && (
-            <div style={{ marginTop: 40, paddingTop: 28, borderTop: "1px solid #e8e5df" }}>
-              <h3 style={{ fontSize: 16, fontWeight: 500, marginBottom: 16, color: "#9e9890" }}>
-                My Songs ({saved.length})
-              </h3>
-              {saved.map((song, i) => <SongCard key={song.id} song={song} index={i} />)}
+              <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+                <button onClick={() => {
+                  onFinish();
+                }} style={{
+                  background: "#2c2a26", color: "#f5f4f1", border: "none",
+                  padding: "12px 28px", borderRadius: 4, fontSize: 14, cursor: "pointer",
+                  textTransform: "uppercase", letterSpacing: 1.5,
+                }}>Go to My Songs →</button>
+                <button onClick={() => {
+                  setStep(1); setTitle(""); setArtist(""); setSpotifyId(""); setMode("type");
+                  setRawLyrics(""); setParsedLines([]); setSelectedBlanks({}); setRestLines({});
+                }} style={{
+                  background: "none", color: "#9e9890", border: "1px solid #d4d0c8",
+                  padding: "12px 24px", borderRadius: 4, fontSize: 14, cursor: "pointer",
+                }}>Create another</button>
+              </div>
             </div>
           )}
         </div>
@@ -858,15 +903,16 @@
           <div style={{ display: "flex", gap: 0, marginBottom: 36, borderBottom: "1px solid #e8e5df", flexWrap: "wrap" }}>
             {[
               { key: "A", label: "Rock & Metal" },
-              { key: "B", label: "Classic & War Songs" },
+              { key: "B", label: "Classic & War" },
               { key: "C", label: "Create Your Own" },
+              { key: "D", label: `My Songs (${customSongs.length})` },
             ].map(({ key, label }) => (
               <button key={key} onClick={() => setPlan(key)} style={{
                 background: "none", border: "none",
                 borderBottom: plan === key ? "2px solid #2c2a26" : "2px solid transparent",
                 color: plan === key ? "#2c2a26" : "#c8c2ba",
-                padding: "10px 0", marginRight: 20, fontSize: 14,
-                cursor: "pointer", textTransform: "uppercase", letterSpacing: 1.5,
+                padding: "10px 0", marginRight: 16, fontSize: 13,
+                cursor: "pointer", textTransform: "uppercase", letterSpacing: 1,
                 transition: "all 0.2s", whiteSpace: "nowrap",
               }}>{label}</button>
             ))}
@@ -886,7 +932,33 @@
 
           {/* Plan C: Editor */}
           {plan === "C" && (
-            <CustomEditor onSave={handleSaveCustom} saved={customSongs} />
+            <CustomEditor onSave={handleSaveCustom} onFinish={() => setPlan("D")} />
+          )}
+
+          {/* Plan D: My Songs */}
+          {plan === "D" && (
+            <div>
+              {customSongs.length === 0 ? (
+                <div style={{ textAlign: "center", padding: "60px 0" }}>
+                  <div style={{ fontSize: 40, marginBottom: 16, color: "#d4d0c8" }}>♫</div>
+                  <p style={{ fontSize: 16, color: "#9e9890", marginBottom: 24 }}>
+                    No custom exercises yet.
+                  </p>
+                  <button onClick={() => setPlan("C")} style={{
+                    background: "#2c2a26", color: "#f5f4f1", border: "none",
+                    padding: "12px 28px", borderRadius: 4, fontSize: 14, cursor: "pointer",
+                    textTransform: "uppercase", letterSpacing: 1.5,
+                  }}>Create your first →</button>
+                </div>
+              ) : (
+                <>
+                  <p style={{ fontSize: 15, color: "#9e9890", lineHeight: 1.8, marginBottom: 32, paddingBottom: 28, borderBottom: "1px solid #e8e5df" }}>
+                    Your custom exercises. These are stored in this session — they'll reset if you reload the page.
+                  </p>
+                  {customSongs.map((song, i) => <SongCard key={song.id} song={song} index={i} />)}
+                </>
+              )}
+            </div>
           )}
 
           {/* Grammar ref */}
