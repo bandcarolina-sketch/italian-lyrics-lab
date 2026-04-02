@@ -590,11 +590,255 @@
       );
     }
 
+    /* ── Custom Song Editor ── */
+    function CustomEditor({ onSave, saved }) {
+      const [step, setStep] = useState(1);
+      const [title, setTitle] = useState("");
+      const [artist, setArtist] = useState("");
+      const [spotifyId, setSpotifyId] = useState("");
+      const [rawLyrics, setRawLyrics] = useState("");
+      const [parsedLines, setParsedLines] = useState([]);
+      const [selectedBlanks, setSelectedBlanks] = useState({});
+      const [restLines, setRestLines] = useState({});
+
+      const inputStyle = {
+        background: "#fff", border: "1.5px solid #d4d0c8", color: "#2c2a26",
+        padding: "12px 14px", borderRadius: 4, fontSize: 16, width: "100%",
+        outline: "none", marginBottom: 12,
+      };
+
+      const handleParseLyrics = () => {
+        const lines = rawLyrics.split("\n").filter(l => l.trim());
+        setParsedLines(lines.map((l, i) => ({ idx: i, text: l.trim(), words: l.trim().split(/\s+/) })));
+        setStep(3);
+      };
+
+      const toggleWord = (lineIdx, wordIdx) => {
+        const key = `${lineIdx}-${wordIdx}`;
+        setSelectedBlanks(prev => {
+          const next = { ...prev };
+          if (next[key]) delete next[key];
+          else next[key] = true;
+          return next;
+        });
+      };
+
+      const toggleRest = (lineIdx) => {
+        setRestLines(prev => {
+          const next = { ...prev };
+          if (next[lineIdx]) delete next[lineIdx];
+          else next[lineIdx] = true;
+          return next;
+        });
+      };
+
+      const buildSong = () => {
+        const lines = parsedLines.map((pl, li) => {
+          if (restLines[li]) return null;
+          const blanks = pl.words
+            .map((w, wi) => selectedBlanks[`${li}-${wi}`] ? { word: w, hint: "fill in", options: [] } : null)
+            .filter(Boolean);
+          return {
+            italian: pl.text,
+            english: "",
+            blanks,
+          };
+        }).filter(Boolean);
+
+        const song = {
+          id: "custom-" + Date.now(),
+          title: title || "My Song",
+          artist: artist || "Unknown",
+          match: "Your custom exercise",
+          spotifyId: spotifyId || "",
+          difficulty: "Intermediate",
+          grammar: "",
+          vocab: [],
+          lines,
+        };
+        onSave(song);
+        // Reset
+        setStep(1); setTitle(""); setArtist(""); setSpotifyId("");
+        setRawLyrics(""); setParsedLines([]); setSelectedBlanks({}); setRestLines({});
+      };
+
+      const blankCount = Object.keys(selectedBlanks).length;
+      const restCount = Object.keys(restLines).length;
+
+      return (
+        <div>
+          {/* Step indicators */}
+          <div style={{ display: "flex", gap: 0, marginBottom: 32 }}>
+            {["Song info", "Paste lyrics", "Pick blanks", "Done"].map((label, i) => (
+              <div key={i} style={{
+                flex: 1, textAlign: "center", padding: "10px 4px",
+                borderBottom: step === i + 1 ? "2px solid #2c2a26" : "2px solid #e8e5df",
+                color: step === i + 1 ? "#2c2a26" : "#c8c2ba",
+                fontSize: 13, transition: "all 0.2s",
+              }}>{i + 1}. {label}</div>
+            ))}
+          </div>
+
+          {/* Step 1: Song info */}
+          {step === 1 && (
+            <div>
+              <h3 style={{ fontSize: 18, fontWeight: 500, marginBottom: 20 }}>Song information</h3>
+              <label style={{ fontSize: 13, color: "#9e9890", display: "block", marginBottom: 4 }}>Song title</label>
+              <input value={title} onChange={e => setTitle(e.target.value)} placeholder="e.g. Albachiara" style={inputStyle} />
+
+              <label style={{ fontSize: 13, color: "#9e9890", display: "block", marginBottom: 4 }}>Artist</label>
+              <input value={artist} onChange={e => setArtist(e.target.value)} placeholder="e.g. Vasco Rossi" style={inputStyle} />
+
+              <label style={{ fontSize: 13, color: "#9e9890", display: "block", marginBottom: 4 }}>Spotify Track ID (optional)</label>
+              <input value={spotifyId} onChange={e => setSpotifyId(e.target.value)} placeholder="e.g. 53MYtv4tzLYg1hbu13Qbc0" style={inputStyle} />
+              <p style={{ fontSize: 13, color: "#b8923c", marginBottom: 20, lineHeight: 1.6 }}>
+                To find this: open the song on Spotify → click ··· → Share → Embed track → copy the ID from the URL after /track/ and before the ?
+              </p>
+
+              <button onClick={() => setStep(2)} disabled={!title.trim()}
+                style={{
+                  background: title.trim() ? "#2c2a26" : "#d4d0c8", color: "#f5f4f1", border: "none",
+                  padding: "12px 28px", borderRadius: 4, fontSize: 14, cursor: title.trim() ? "pointer" : "not-allowed",
+                  textTransform: "uppercase", letterSpacing: 1.5,
+                }}>Next →</button>
+            </div>
+          )}
+
+          {/* Step 2: Paste lyrics */}
+          {step === 2 && (
+            <div>
+              <h3 style={{ fontSize: 18, fontWeight: 500, marginBottom: 8 }}>Paste the Italian lyrics</h3>
+              <p style={{ fontSize: 14, color: "#9e9890", marginBottom: 16, lineHeight: 1.6 }}>
+                Paste the full lyrics below, one line per row. You can find lyrics on sites like Musixmatch, AZLyrics, or Genius.
+              </p>
+              <textarea value={rawLyrics} onChange={e => setRawLyrics(e.target.value)}
+                placeholder={"Respiri piano per non far rumore\nTi addormenti di sera\nTi risvegli con il sole\n..."}
+                rows={14}
+                style={{
+                  ...inputStyle, resize: "vertical", lineHeight: 1.8,
+                  fontFamily: "Helvetica, Arial, sans-serif", minHeight: 200,
+                }}
+              />
+
+              <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                <button onClick={() => setStep(1)} style={{
+                  background: "none", color: "#9e9890", border: "1px solid #d4d0c8",
+                  padding: "12px 24px", borderRadius: 4, fontSize: 14, cursor: "pointer",
+                }}>← Back</button>
+                <button onClick={handleParseLyrics} disabled={!rawLyrics.trim()}
+                  style={{
+                    background: rawLyrics.trim() ? "#2c2a26" : "#d4d0c8", color: "#f5f4f1", border: "none",
+                    padding: "12px 28px", borderRadius: 4, fontSize: 14,
+                    cursor: rawLyrics.trim() ? "pointer" : "not-allowed",
+                    textTransform: "uppercase", letterSpacing: 1.5,
+                  }}>Next →</button>
+              </div>
+            </div>
+          )}
+
+          {/* Step 3: Pick blanks */}
+          {step === 3 && (
+            <div>
+              <h3 style={{ fontSize: 18, fontWeight: 500, marginBottom: 8 }}>Tap words to make them blanks</h3>
+              <p style={{ fontSize: 14, color: "#9e9890", marginBottom: 8, lineHeight: 1.6 }}>
+                Tap any word to turn it into a blank (it will highlight in gold). Tap the "rest" button on a line to skip it entirely — those lines will show as complete text during the exercise, giving you a breather.
+              </p>
+              <p style={{ fontSize: 13, color: "#b8923c", marginBottom: 20 }}>
+                {blankCount} blank{blankCount !== 1 ? "s" : ""} selected · {restCount} rest line{restCount !== 1 ? "s" : ""}
+              </p>
+
+              {parsedLines.map((pl, li) => (
+                <div key={li} style={{
+                  marginBottom: 16, padding: "12px 14px",
+                  background: restLines[li] ? "#f0efec" : "#fff",
+                  border: "1px solid #e8e5df", borderRadius: 6,
+                  opacity: restLines[li] ? 0.5 : 1,
+                  transition: "opacity 0.2s",
+                }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8, flexWrap: "wrap", gap: 8 }}>
+                    <span style={{ fontSize: 12, color: "#c8c2ba" }}>Line {li + 1}</span>
+                    <button onClick={() => toggleRest(li)} style={{
+                      background: restLines[li] ? "#b8923c" : "none",
+                      color: restLines[li] ? "#fff" : "#b8923c",
+                      border: "1px solid #b8923c", borderRadius: 3,
+                      padding: "3px 10px", fontSize: 11, cursor: "pointer",
+                    }}>{restLines[li] ? "★ rest line" : "mark as rest"}</button>
+                  </div>
+                  <div style={{ fontSize: 18, lineHeight: 2, flexWrap: "wrap", display: "flex", gap: 4 }}>
+                    {pl.words.map((word, wi) => {
+                      const key = `${li}-${wi}`;
+                      const isBlank = selectedBlanks[key];
+                      return (
+                        <span key={wi} onClick={() => !restLines[li] && toggleWord(li, wi)}
+                          style={{
+                            cursor: restLines[li] ? "default" : "pointer",
+                            padding: "2px 6px", borderRadius: 3,
+                            background: isBlank ? "#b8923c" : "transparent",
+                            color: isBlank ? "#fff" : "#2c2a26",
+                            transition: "all 0.15s",
+                            userSelect: "none",
+                          }}>{word}</span>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+
+              <div style={{ display: "flex", gap: 10, marginTop: 20, flexWrap: "wrap" }}>
+                <button onClick={() => setStep(2)} style={{
+                  background: "none", color: "#9e9890", border: "1px solid #d4d0c8",
+                  padding: "12px 24px", borderRadius: 4, fontSize: 14, cursor: "pointer",
+                }}>← Back</button>
+                <button onClick={() => { buildSong(); setStep(4); }} disabled={blankCount === 0}
+                  style={{
+                    background: blankCount > 0 ? "#5a8a5a" : "#d4d0c8", color: "#f5f4f1", border: "none",
+                    padding: "12px 28px", borderRadius: 4, fontSize: 14,
+                    cursor: blankCount > 0 ? "pointer" : "not-allowed",
+                    textTransform: "uppercase", letterSpacing: 1.5,
+                  }}>Create exercise ✓</button>
+              </div>
+            </div>
+          )}
+
+          {/* Step 4: Done */}
+          {step === 4 && (
+            <div style={{ textAlign: "center", padding: "40px 0" }}>
+              <div style={{ fontSize: 48, marginBottom: 16 }}>✓</div>
+              <h3 style={{ fontSize: 20, fontWeight: 500, marginBottom: 8 }}>Exercise created!</h3>
+              <p style={{ fontSize: 15, color: "#9e9890", marginBottom: 24 }}>
+                Your exercise has been added to the "My Songs" section below. Scroll down to try it out.
+              </p>
+              <button onClick={() => setStep(1)} style={{
+                background: "#2c2a26", color: "#f5f4f1", border: "none",
+                padding: "12px 28px", borderRadius: 4, fontSize: 14, cursor: "pointer",
+                textTransform: "uppercase", letterSpacing: 1.5,
+              }}>Create another</button>
+            </div>
+          )}
+
+          {/* Saved custom songs */}
+          {saved.length > 0 && step !== 4 && (
+            <div style={{ marginTop: 40, paddingTop: 28, borderTop: "1px solid #e8e5df" }}>
+              <h3 style={{ fontSize: 16, fontWeight: 500, marginBottom: 16, color: "#9e9890" }}>
+                My Songs ({saved.length})
+              </h3>
+              {saved.map((song, i) => <SongCard key={song.id} song={song} index={i} />)}
+            </div>
+          )}
+        </div>
+      );
+    }
+
     /* ── App ── */
     function App() {
       const [plan, setPlan] = useState("A");
       const [showRef, setShowRef] = useState(false);
-      const songs = plan === "A" ? SONGS.planA : SONGS.planB;
+      const [customSongs, setCustomSongs] = useState([]);
+      const songs = plan === "A" ? SONGS.planA : plan === "B" ? SONGS.planB : [];
+
+      const handleSaveCustom = (song) => {
+        setCustomSongs(prev => [...prev, song]);
+      };
 
       return (
         <div style={{ maxWidth: 680, margin: "0 auto", padding: "40px 20px 80px" }}>
@@ -612,25 +856,38 @@
 
           {/* Tabs */}
           <div style={{ display: "flex", gap: 0, marginBottom: 36, borderBottom: "1px solid #e8e5df", flexWrap: "wrap" }}>
-            {[{ key: "A", label: "Rock & Metal" }, { key: "B", label: "Classic & War Songs" }].map(({ key, label }) => (
+            {[
+              { key: "A", label: "Rock & Metal" },
+              { key: "B", label: "Classic & War Songs" },
+              { key: "C", label: "Create Your Own" },
+            ].map(({ key, label }) => (
               <button key={key} onClick={() => setPlan(key)} style={{
                 background: "none", border: "none",
                 borderBottom: plan === key ? "2px solid #2c2a26" : "2px solid transparent",
                 color: plan === key ? "#2c2a26" : "#c8c2ba",
-                padding: "10px 0", marginRight: 24, fontSize: 14,
+                padding: "10px 0", marginRight: 20, fontSize: 14,
                 cursor: "pointer", textTransform: "uppercase", letterSpacing: 1.5,
                 transition: "all 0.2s", whiteSpace: "nowrap",
               }}>{label}</button>
             ))}
           </div>
 
-          <p style={{ fontSize: 15, color: "#9e9890", lineHeight: 1.8, marginBottom: 32, paddingBottom: 28, borderBottom: "1px solid #e8e5df" }}>
-            {plan === "A"
-              ? "Italian rock matched to your taste — Vasco Rossi, Måneskin, Toto Cutugno. Clear standard Italian."
-              : "Songs from Italy's wars and post-war era. Partisan anthems and national classics — standard Italian, no dialects."}
-          </p>
+          {/* Plan A / B content */}
+          {(plan === "A" || plan === "B") && (
+            <>
+              <p style={{ fontSize: 15, color: "#9e9890", lineHeight: 1.8, marginBottom: 32, paddingBottom: 28, borderBottom: "1px solid #e8e5df" }}>
+                {plan === "A"
+                  ? "Italian rock matched to your taste — Vasco Rossi, Måneskin, Toto Cutugno. Clear standard Italian."
+                  : "Songs from Italy's wars and post-war era. Partisan anthems and national classics — standard Italian, no dialects."}
+              </p>
+              {songs.map((song, i) => <SongCard key={song.id} song={song} index={i} />)}
+            </>
+          )}
 
-          {songs.map((song, i) => <SongCard key={song.id} song={song} index={i} />)}
+          {/* Plan C: Editor */}
+          {plan === "C" && (
+            <CustomEditor onSave={handleSaveCustom} saved={customSongs} />
+          )}
 
           {/* Grammar ref */}
           <div style={{ marginTop: 48 }}>
