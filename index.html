@@ -4,17 +4,20 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Italian Lyrics Lab</title>
-  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: #f5f4f1; color: #3a3632; font-family: 'Crimson Pro', Georgia, serif; -webkit-font-smoothing: antialiased; }
+    body {
+      background: #f5f4f1; color: #2c2a26;
+      font-family: Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
+    }
     select, input, button { font-family: inherit; }
     #root { min-height: 100vh; }
   </style>
 </head>
 <body>
   <div id="root"></div>
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
@@ -34,7 +37,7 @@
     const SONGS = {
       planA: [
         {
-          id: "a1", title: "Albachiara", artist: "Vasco Rossi", genre: "Rock",
+          id: "a1", title: "Albachiara", artist: "Vasco Rossi",
           match: "Melodic rock ballad — Toto's softer side",
           spotifyId: "53MYtv4tzLYg1hbu13Qbc0", difficulty: "Beginner",
           grammar: "Present tense (tu), adjectives, comparisons with 'come'",
@@ -63,7 +66,7 @@
           ]
         },
         {
-          id: "a2", title: "Zitti e buoni", artist: "Måneskin", genre: "Glam Rock",
+          id: "a2", title: "Zitti e buoni", artist: "Måneskin",
           match: "Judas Priest attitude, Italian style",
           spotifyId: "776AftMmFFAWUIEAb3lHhw", difficulty: "Beginner",
           grammar: "Imperative, reflexive verbs, negation",
@@ -92,7 +95,7 @@
           ]
         },
         {
-          id: "a3", title: "L'Italiano", artist: "Toto Cutugno", genre: "Pop Rock",
+          id: "a3", title: "L'Italiano", artist: "Toto Cutugno",
           match: "Queen arena sing-along energy",
           spotifyId: "2S7RApTsKT0CtYojYq2cKz", difficulty: "Beginner",
           grammar: "Present tense, articles, identity vocabulary",
@@ -121,7 +124,7 @@
           ]
         },
         {
-          id: "a4", title: "Torna a casa", artist: "Måneskin", genre: "Alternative Rock",
+          id: "a4", title: "Torna a casa", artist: "Måneskin",
           match: "Metallica's 'Nothing Else Matters' feel",
           spotifyId: "3590AAEoqH50z4UmhMIY85", difficulty: "Intermediate",
           grammar: "Imperative (tu), possessives, conditional",
@@ -150,7 +153,7 @@
           ]
         },
         {
-          id: "a5", title: "Vita spericolata", artist: "Vasco Rossi", genre: "Rock",
+          id: "a5", title: "Vita spericolata", artist: "Vasco Rossi",
           match: "Luke Combs' everyman rebel energy",
           spotifyId: "5zd9EXZujflINL16eUHgqo", difficulty: "Beginner",
           grammar: "'Voglio' + infinitive, adjective agreement",
@@ -180,7 +183,7 @@
       ],
       planB: [
         {
-          id: "b1", title: "Bella Ciao", artist: "Traditional — Partisan song", genre: "Folk / Resistance",
+          id: "b1", title: "Bella Ciao", artist: "Traditional — Partisan song",
           match: "WWII partisan anthem",
           spotifyId: "4EZjBX66dXRnd7HiXz9zqi", difficulty: "Beginner",
           grammar: "Passato prossimo, reflexive verbs, imperative",
@@ -209,7 +212,7 @@
           ]
         },
         {
-          id: "b2", title: "La Guerra di Piero", artist: "Fabrizio De André", genre: "Folk Ballad",
+          id: "b2", title: "La Guerra di Piero", artist: "Fabrizio De André",
           match: "WWI anti-war — Italy's 'Blowin' in the Wind'",
           spotifyId: "1lNop22I4dLz5MYuc60fUX", difficulty: "Intermediate",
           grammar: "Passato remoto, imperfetto, prepositions",
@@ -238,7 +241,7 @@
           ]
         },
         {
-          id: "b3", title: "Fischia il vento", artist: "Traditional — Partisan song", genre: "Folk / Resistance",
+          id: "b3", title: "Fischia il vento", artist: "Traditional — Partisan song",
           match: "WWII partisan march",
           spotifyId: "1njNbQidj6KQTQYS1KJWok", difficulty: "Intermediate",
           grammar: "Present tense (3rd person), descriptive adjectives",
@@ -267,7 +270,7 @@
           ]
         },
         {
-          id: "b4", title: "La Leggenda del Piave", artist: "Traditional — WWI", genre: "Patriotic March",
+          id: "b4", title: "La Leggenda del Piave", artist: "Traditional — WWI",
           match: "WWI — Battle of the Piave River",
           spotifyId: "2cYkoqZiyCdwtwj01oaRp8", difficulty: "Intermediate",
           grammar: "Passato remoto, 3rd person narrative",
@@ -291,7 +294,7 @@
           ]
         },
         {
-          id: "b5", title: "Volare", artist: "Domenico Modugno", genre: "Classic Pop",
+          id: "b5", title: "Volare", artist: "Domenico Modugno",
           match: "Post-war joy — the most famous Italian song",
           spotifyId: "006Ndmw2hHxvnLbJsBFnPx", difficulty: "Beginner",
           grammar: "Imperfetto, infinitive constructions",
@@ -322,67 +325,117 @@
       ]
     };
 
-    /* ── BlankInput ── */
-    function BlankInput({ blank, value, onChange, submitted, isOpen, attempts }) {
-      const isCorrect = value.trim().toLowerCase() === blank.word.toLowerCase();
-      let borderColor = "#ddd8d0";
-      if (submitted) borderColor = isCorrect ? "#7a9e7a" : "#c08070";
+    /* ── Render a lyric line with blanks inline ── */
+    function LyricLine({ line, lineIdx, answers, onAnswer, submitted, isWarmup, isOpen }) {
+      // Build parts: text or blank
+      const parts = [];
+      let text = line.italian;
+      let lastIdx = 0;
+      let blankNum = 0;
 
-      const getHint = () => {
-        if (attempts < 3) return null;
-        const w = blank.word;
-        if (attempts < 4) return `Starts with "${w[0].toUpperCase()}", ${w.length} letters`;
-        if (attempts < 5) {
-          const half = w.slice(0, Math.ceil(w.length / 2));
-          return half + "·".repeat(w.length - half.length);
+      line.blanks.forEach((b) => {
+        const idx = text.indexOf(b.word, lastIdx);
+        if (idx >= 0) {
+          if (idx > lastIdx) parts.push({ type: "text", val: text.slice(lastIdx, idx) });
+          parts.push({ type: "blank", blankIdx: blankNum, word: b.word });
+          blankNum++;
+          lastIdx = idx + b.word.length;
         }
-        return `Answer: ${w}`;
-      };
-      const hint = getHint();
-
-      const sharedStyle = {
-        background: submitted ? (isCorrect ? "#f2f6f2" : "#faf2f0") : "#f8f7f4",
-        border: `1.5px solid ${borderColor}`,
-        color: "#3a3632",
-        padding: "8px 12px",
-        borderRadius: 3,
-        fontSize: 14,
-        fontFamily: "'Crimson Pro', Georgia, serif",
-        width: "100%",
-        outline: "none",
-        transition: "border-color 0.2s",
-        boxSizing: "border-box",
-      };
+      });
+      if (lastIdx < text.length) parts.push({ type: "text", val: text.slice(lastIdx) });
 
       return (
-        <div style={{ marginBottom: 10 }}>
-          <div style={{ fontSize: 11, color: "#9e9890", marginBottom: 4, fontFamily: "'IBM Plex Mono', monospace", letterSpacing: 0.3 }}>
-            {blank.hint}
+        <div style={{ marginBottom: 28 }}>
+          {/* English translation */}
+          <div style={{ fontSize: 14, color: "#9e9890", marginBottom: 8, fontStyle: "italic" }}>
+            {line.english}
           </div>
 
-          {isOpen ? (
-            <input
-              type="text" value={value} onChange={e => onChange(e.target.value)}
-              placeholder="type your answer…"
-              autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck="false"
-              style={sharedStyle}
-            />
-          ) : (
-            <select value={value} onChange={e => onChange(e.target.value)}
-              style={{ ...sharedStyle, cursor: "pointer", appearance: "auto" }}>
-              <option value="">—</option>
-              {blank.options.map((o, i) => <option key={i} value={o}>{o}</option>)}
-            </select>
-          )}
+          {/* Italian lyric with inline blanks */}
+          <div style={{ fontSize: 20, lineHeight: 2, color: "#2c2a26", marginBottom: 12, wordWrap: "break-word" }}>
+            {parts.map((p, i) => {
+              if (p.type === "text") return <span key={i}>{p.val}</span>;
 
-          {hint && !submitted && (
-            <div style={{ fontSize: 11, color: "#b8923c", marginTop: 4, fontFamily: "'IBM Plex Mono', monospace" }}>
-              💡 {hint}
-            </div>
-          )}
-          {submitted && !isCorrect && (
-            <div style={{ fontSize: 11, color: "#c08070", marginTop: 3, fontFamily: "'IBM Plex Mono', monospace" }}>
-              → {blank.word}
+              const key = `${lineIdx}-${p.blankIdx}`;
+              const val = answers[key] || "";
+              const correct = val.trim().toLowerCase() === p.word.toLowerCase();
+
+              if (isWarmup) {
+                return <span key={i} style={{ fontWeight: 600, color: "#5a8a5a" }}>{p.word}</span>;
+              }
+
+              if (submitted && correct) {
+                return <span key={i} style={{ fontWeight: 600, color: "#5a8a5a" }}>{p.word}</span>;
+              }
+              if (submitted && !correct) {
+                return <span key={i} style={{
+                  fontWeight: 600, color: "#c47a6e",
+                  borderBottom: "2px solid #c47a6e", paddingBottom: 1,
+                }}>{p.word}</span>;
+              }
+
+              // Unfilled blank
+              const width = Math.max(p.word.length * 11, 60);
+              return (
+                <span key={i} style={{
+                  display: "inline-block",
+                  borderBottom: "2px solid #b8923c",
+                  width: Math.min(width, 180),
+                  minWidth: 50,
+                  textAlign: "center",
+                  color: "#b8923c",
+                  fontWeight: 600,
+                  verticalAlign: "bottom",
+                  margin: "0 2px",
+                }}>{val || "\u00A0\u00A0\u00A0"}</span>
+              );
+            })}
+          </div>
+
+          {/* Input fields for this line (skip warmup) */}
+          {!isWarmup && (
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+              {line.blanks.map((blank, bi) => {
+                const key = `${lineIdx}-${bi}`;
+                const val = answers[key] || "";
+                const correct = val.trim().toLowerCase() === blank.word.toLowerCase();
+                let border = "1.5px solid #d4d0c8";
+                if (submitted) border = correct ? "1.5px solid #7a9e7a" : "1.5px solid #c47a6e";
+
+                return (
+                  <div key={bi} style={{ flex: "1 1 200px", minWidth: 150 }}>
+                    <div style={{ fontSize: 12, color: "#9e9890", marginBottom: 3 }}>
+                      {blank.hint}
+                    </div>
+                    {isOpen ? (
+                      <input type="text" value={val}
+                        onChange={e => onAnswer(key, e.target.value)}
+                        placeholder="type answer…"
+                        autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck="false"
+                        style={{
+                          background: submitted ? (correct ? "#f0f5f0" : "#faf0ee") : "#fff",
+                          border, color: "#2c2a26", padding: "10px 12px", borderRadius: 4,
+                          fontSize: 16, width: "100%", outline: "none",
+                        }}
+                      />
+                    ) : (
+                      <select value={val} onChange={e => onAnswer(key, e.target.value)}
+                        style={{
+                          background: submitted ? (correct ? "#f0f5f0" : "#faf0ee") : "#fff",
+                          border, color: "#2c2a26", padding: "10px 12px", borderRadius: 4,
+                          fontSize: 16, width: "100%", cursor: "pointer", outline: "none",
+                          appearance: "auto",
+                        }}>
+                        <option value="">— select —</option>
+                        {blank.options.map((o, oi) => <option key={oi} value={o}>{o}</option>)}
+                      </select>
+                    )}
+                    {submitted && !correct && (
+                      <div style={{ fontSize: 12, color: "#c47a6e", marginTop: 3 }}>→ {blank.word}</div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>
@@ -397,10 +450,20 @@
       const [attempts, setAttempts] = useState(0);
 
       const isOpen = song.difficulty !== "Beginner";
-      const totalBlanks = song.lines.reduce((s, l) => s + l.blanks.length, 0);
-      const correct = song.lines.reduce((s, l, li) =>
+      const warmupCount = song.difficulty === "Beginner" ? 2 : 0;
+
+      const exerciseLines = song.lines.slice(warmupCount);
+      const totalBlanks = exerciseLines.reduce((s, l) => s + l.blanks.length, 0);
+      const correct = exerciseLines.reduce((s, l, li) =>
         s + l.blanks.reduce((s2, b, bi) =>
-          s2 + ((answers[`${li}-${bi}`] || "").trim().toLowerCase() === b.word.toLowerCase() ? 1 : 0), 0), 0);
+          s2 + ((answers[`${li + warmupCount}-${bi}`] || "").trim().toLowerCase() === b.word.toLowerCase() ? 1 : 0), 0), 0);
+
+      const getHint = () => {
+        if (!isOpen || attempts < 3) return null;
+        return attempts < 4 ? "First letter + word length shown in lyrics"
+             : attempts < 5 ? "Half of each word revealed"
+             : "Full answers shown";
+      };
 
       const handleCheck = () => {
         setSubmitted(true);
@@ -412,128 +475,111 @@
       };
 
       return (
-        <div style={{ borderBottom: "1px solid #eae7e2" }}>
-          {/* Header */}
+        <div style={{ borderBottom: "1px solid #e8e5df" }}>
           <div onClick={() => setOpen(!open)} style={{
             padding: "20px 0", cursor: "pointer", display: "flex",
-            justifyContent: "space-between", alignItems: "baseline", userSelect: "none",
+            justifyContent: "space-between", alignItems: "center",
+            userSelect: "none", flexWrap: "wrap", gap: 8,
           }}>
-            <div style={{ display: "flex", alignItems: "baseline", gap: 14 }}>
-              <span style={{ fontSize: 11, color: "#c8c2ba", fontFamily: "'IBM Plex Mono', monospace", minWidth: 20 }}>
+            <div style={{ display: "flex", alignItems: "baseline", gap: 12, flexWrap: "wrap" }}>
+              <span style={{ fontSize: 13, color: "#c8c2ba", minWidth: 24 }}>
                 {String(index + 1).padStart(2, "0")}
               </span>
-              <div>
-                <span style={{ fontSize: 18, fontFamily: "'Crimson Pro', Georgia, serif", fontWeight: 600, color: "#3a3632" }}>
-                  {song.title}
-                </span>
-                <span style={{ fontSize: 14, color: "#9e9890", marginLeft: 12, fontStyle: "italic" }}>
-                  {song.artist}
-                </span>
-              </div>
+              <span style={{ fontSize: 20, fontWeight: 600, color: "#2c2a26" }}>
+                {song.title}
+              </span>
+              <span style={{ fontSize: 15, color: "#9e9890", fontStyle: "italic" }}>
+                {song.artist}
+              </span>
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <span style={{
-                fontSize: 9, padding: "3px 8px", borderRadius: 2,
-                color: song.difficulty === "Beginner" ? "#7a9e7a" : "#b8923c",
-                border: `1px solid ${song.difficulty === "Beginner" ? "#7a9e7a30" : "#b8923c30"}`,
-                fontFamily: "'IBM Plex Mono', monospace", textTransform: "uppercase", letterSpacing: 1.5,
+                fontSize: 11, padding: "3px 10px", borderRadius: 3,
+                color: song.difficulty === "Beginner" ? "#5a8a5a" : "#b8923c",
+                border: `1px solid ${song.difficulty === "Beginner" ? "#5a8a5a33" : "#b8923c33"}`,
+                textTransform: "uppercase", letterSpacing: 1,
               }}>{song.difficulty}</span>
               <span style={{
                 color: "#c8c2ba", transform: open ? "rotate(90deg)" : "rotate(0)",
-                transition: "transform 0.15s ease", display: "inline-block", fontSize: 16,
+                transition: "transform 0.15s", display: "inline-block", fontSize: 18,
               }}>›</span>
             </div>
           </div>
 
-          {/* Body */}
           {open && (
-            <div style={{ paddingBottom: 32, paddingLeft: 34 }}>
-              {/* Spotify embed */}
-              <div style={{ marginBottom: 20 }}>
+            <div style={{ paddingBottom: 36, paddingLeft: 0 }}>
+              {/* Spotify */}
+              <div style={{ marginBottom: 24 }}>
                 <iframe
                   style={{ borderRadius: 12 }}
                   src={`https://open.spotify.com/embed/track/${song.spotifyId}?utm_source=generator`}
-                  width="100%" height="152" frameBorder="0"
-                  allowFullScreen=""
+                  width="100%" height="152" frameBorder="0" allowFullScreen=""
                   allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
                   loading="lazy"
                 />
-                <div style={{ fontSize: 12, color: "#c8c2ba", fontStyle: "italic", marginTop: 6 }}>{song.match}</div>
               </div>
 
-              {/* Grammar & vocab */}
-              <div style={{ marginBottom: 20, fontSize: 12, color: "#9e9890", lineHeight: 1.7 }}>
-                <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 9, textTransform: "uppercase", letterSpacing: 1.5, color: "#c8c2ba" }}>grammar </span>
+              {/* Meta */}
+              <div style={{ marginBottom: 16, fontSize: 14, color: "#9e9890" }}>
+                <span style={{ color: "#b8923c", fontStyle: "italic" }}>{song.match}</span>
+              </div>
+              <div style={{ marginBottom: 24, fontSize: 14, color: "#9e9890", lineHeight: 1.8 }}>
+                <strong style={{ color: "#2c2a26", fontWeight: 500, fontSize: 12, textTransform: "uppercase", letterSpacing: 1 }}>Grammar: </strong>
                 {song.grammar}
-                <span style={{ margin: "0 12px", color: "#ddd8d0" }}>|</span>
-                <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 9, textTransform: "uppercase", letterSpacing: 1.5, color: "#c8c2ba" }}>vocab </span>
-                {song.vocab.join(" · ")}
+                <span style={{ margin: "0 10px", color: "#d4d0c8" }}>|</span>
+                <strong style={{ color: "#2c2a26", fontWeight: 500, fontSize: 12, textTransform: "uppercase", letterSpacing: 1 }}>Vocab: </strong>
+                {song.vocab.join(", ")}
               </div>
 
-              {isOpen && (
-                <div style={{ marginBottom: 16, padding: "8px 12px", background: "#f0efec", borderRadius: 3, fontSize: 11, fontFamily: "'IBM Plex Mono', monospace", color: "#9e9890", lineHeight: 1.6 }}>
-                  Free-text mode — type your answers. Hints appear after 3 wrong checks.
+              {/* Mode indicator */}
+              <div style={{
+                marginBottom: 24, padding: "10px 14px", background: "#efeee9",
+                borderRadius: 4, fontSize: 14, color: "#6e6a62",
+              }}>
+                {song.difficulty === "Beginner"
+                  ? "Beginner mode — first 2 lines completed as warm-up. Fill in the blanks using the dropdowns below."
+                  : "Free-text mode — type your answers. Hints appear after 3 wrong attempts."}
+              </div>
+
+              {/* Hint for intermediate after attempts */}
+              {getHint() && (
+                <div style={{ marginBottom: 16, fontSize: 13, color: "#b8923c" }}>
+                  💡 {getHint()}
                 </div>
               )}
 
-              {/* Lines */}
+              {/* All lyrics */}
               {song.lines.map((line, li) => (
-                <div key={li} style={{ marginBottom: 24, paddingLeft: 16, borderLeft: "2px solid #eae7e2" }}>
-                  <div style={{ fontSize: 12, color: "#b5b0a8", marginBottom: 8, fontStyle: "italic", lineHeight: 1.6 }}>
-                    {line.english}
-                  </div>
-                  <div style={{ fontSize: 16, color: "#5a5650", marginBottom: 12, fontFamily: "'Crimson Pro', Georgia, serif", lineHeight: 1.8, letterSpacing: 0.3 }}>
-                    {(() => {
-                      let text = line.italian; const parts = []; let lastIdx = 0;
-                      line.blanks.forEach(b => {
-                        const idx = text.indexOf(b.word, lastIdx);
-                        if (idx >= 0) {
-                          if (idx > lastIdx) parts.push({ type: "text", val: text.slice(lastIdx, idx) });
-                          parts.push({ type: "blank" });
-                          lastIdx = idx + b.word.length;
-                        }
-                      });
-                      if (lastIdx < text.length) parts.push({ type: "text", val: text.slice(lastIdx) });
-                      return parts.map((p, i) =>
-                        p.type === "blank"
-                          ? <span key={i} style={{ borderBottom: "2px solid #b8923c", padding: "0 6px", color: "#b8923c" }}>___</span>
-                          : <span key={i}>{p.val}</span>
-                      );
-                    })()}
-                  </div>
-                  {line.blanks.map((blank, bi) => (
-                    <BlankInput key={bi} blank={blank}
-                      value={answers[`${li}-${bi}`] || ""}
-                      onChange={val => setAnswers(p => ({ ...p, [`${li}-${bi}`]: val }))}
-                      submitted={submitted} isOpen={isOpen} attempts={attempts}
-                    />
-                  ))}
-                </div>
+                <LyricLine key={li} line={line} lineIdx={li}
+                  answers={answers} onAnswer={(k, v) => setAnswers(p => ({ ...p, [k]: v }))}
+                  submitted={submitted}
+                  isWarmup={li < warmupCount}
+                  isOpen={isOpen}
+                />
               ))}
 
               {/* Actions */}
-              <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap", marginTop: 8 }}>
                 {!submitted ? (
                   <button onClick={handleCheck} style={{
-                    background: "#3a3632", color: "#f5f4f1", border: "none",
-                    padding: "9px 24px", borderRadius: 3, fontSize: 11,
-                    fontFamily: "'IBM Plex Mono', monospace", cursor: "pointer",
-                    textTransform: "uppercase", letterSpacing: 2,
+                    background: "#2c2a26", color: "#f5f4f1", border: "none",
+                    padding: "12px 28px", borderRadius: 4, fontSize: 14,
+                    cursor: "pointer", textTransform: "uppercase", letterSpacing: 1.5,
                   }}>Check</button>
                 ) : (
                   <>
-                    <span style={{ fontSize: 13, fontFamily: "'IBM Plex Mono', monospace", color: correct === totalBlanks ? "#7a9e7a" : "#b8923c", fontWeight: 600 }}>
+                    <span style={{
+                      fontSize: 16, fontWeight: 600,
+                      color: correct === totalBlanks ? "#5a8a5a" : "#b8923c",
+                    }}>
                       {correct}/{totalBlanks}{correct === totalBlanks ? " — perfetto!" : ""}
                     </span>
                     <button onClick={handleRetry} style={{
-                      background: "none", color: "#9e9890", border: "1px solid #ddd8d0",
-                      padding: "6px 16px", borderRadius: 3, fontSize: 11, cursor: "pointer",
-                      fontFamily: "'IBM Plex Mono', monospace",
+                      background: "none", color: "#9e9890", border: "1px solid #d4d0c8",
+                      padding: "10px 20px", borderRadius: 4, fontSize: 13, cursor: "pointer",
                     }}>{isOpen && correct < totalBlanks ? "Try again" : "Retry"}</button>
                     {isOpen && correct < totalBlanks && attempts > 0 && (
-                      <span style={{ fontSize: 11, color: "#c8c2ba", fontFamily: "'IBM Plex Mono', monospace" }}>
-                        attempt {attempts}/5
-                      </span>
+                      <span style={{ fontSize: 13, color: "#c8c2ba" }}>attempt {attempts}/5</span>
                     )}
                   </>
                 )}
@@ -551,36 +597,37 @@
       const songs = plan === "A" ? SONGS.planA : SONGS.planB;
 
       return (
-        <div style={{ maxWidth: 580, margin: "0 auto", padding: "56px 24px 72px" }}>
-          <header style={{ marginBottom: 56 }}>
-            <div style={{ fontSize: 9, fontFamily: "'IBM Plex Mono', monospace", textTransform: "uppercase", letterSpacing: 5, color: "#c8c2ba", marginBottom: 14 }}>
+        <div style={{ maxWidth: 680, margin: "0 auto", padding: "40px 20px 80px" }}>
+          <header style={{ marginBottom: 48 }}>
+            <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: 4, color: "#c8c2ba", marginBottom: 10 }}>
               Impara l'italiano con la musica
             </div>
-            <h1 style={{ fontSize: 34, fontWeight: 300, margin: 0, lineHeight: 1.2, color: "#3a3632", letterSpacing: -0.5 }}>
+            <h1 style={{ fontSize: 36, fontWeight: 300, margin: 0, lineHeight: 1.3, color: "#2c2a26" }}>
               Italian Lyrics Lab
             </h1>
-            <p style={{ fontSize: 15, color: "#9e9890", marginTop: 12, lineHeight: 1.7, fontStyle: "italic", fontWeight: 300 }}>
+            <p style={{ fontSize: 16, color: "#9e9890", marginTop: 12, lineHeight: 1.7, fontStyle: "italic" }}>
               Listen, fill in the blanks, learn conjugation and vocabulary through songs.
             </p>
           </header>
 
-          <div style={{ display: "flex", gap: 0, marginBottom: 40, borderBottom: "1px solid #eae7e2" }}>
+          {/* Tabs */}
+          <div style={{ display: "flex", gap: 0, marginBottom: 36, borderBottom: "1px solid #e8e5df", flexWrap: "wrap" }}>
             {[{ key: "A", label: "Rock & Metal" }, { key: "B", label: "Classic & War Songs" }].map(({ key, label }) => (
               <button key={key} onClick={() => setPlan(key)} style={{
                 background: "none", border: "none",
-                borderBottom: plan === key ? "1.5px solid #3a3632" : "1.5px solid transparent",
-                color: plan === key ? "#3a3632" : "#c8c2ba",
-                padding: "10px 0", marginRight: 28, fontSize: 12,
-                fontFamily: "'IBM Plex Mono', monospace", cursor: "pointer",
-                textTransform: "uppercase", letterSpacing: 2, transition: "all 0.2s",
+                borderBottom: plan === key ? "2px solid #2c2a26" : "2px solid transparent",
+                color: plan === key ? "#2c2a26" : "#c8c2ba",
+                padding: "10px 0", marginRight: 24, fontSize: 14,
+                cursor: "pointer", textTransform: "uppercase", letterSpacing: 1.5,
+                transition: "all 0.2s", whiteSpace: "nowrap",
               }}>{label}</button>
             ))}
           </div>
 
-          <p style={{ fontSize: 14, color: "#9e9890", lineHeight: 1.8, marginBottom: 36, paddingBottom: 32, borderBottom: "1px solid #eae7e2" }}>
+          <p style={{ fontSize: 15, color: "#9e9890", lineHeight: 1.8, marginBottom: 32, paddingBottom: 28, borderBottom: "1px solid #e8e5df" }}>
             {plan === "A"
-              ? "Italian rock matched to your taste — Vasco Rossi, Måneskin, Toto Cutugno. Clear standard Italian, good for beginners."
-              : "Songs from Italy's wars and post-war era. Partisan anthems, patriotic marches — all standard Italian, no dialects."}
+              ? "Italian rock matched to your taste — Vasco Rossi, Måneskin, Toto Cutugno. Clear standard Italian."
+              : "Songs from Italy's wars and post-war era. Partisan anthems and national classics — standard Italian, no dialects."}
           </p>
 
           {songs.map((song, i) => <SongCard key={song.id} song={song} index={i} />)}
@@ -588,16 +635,15 @@
           {/* Grammar ref */}
           <div style={{ marginTop: 48 }}>
             <button onClick={() => setShowRef(!showRef)} style={{
-              background: "none", border: "none", color: "#c8c2ba", fontSize: 10,
-              fontFamily: "'IBM Plex Mono', monospace", cursor: "pointer",
-              textTransform: "uppercase", letterSpacing: 2.5, padding: 0,
+              background: "none", border: "none", color: "#c8c2ba", fontSize: 12,
+              cursor: "pointer", textTransform: "uppercase", letterSpacing: 2, padding: 0,
               display: "flex", alignItems: "center", gap: 8,
             }}>
               <span style={{ display: "inline-block", transform: showRef ? "rotate(90deg)" : "rotate(0)", transition: "transform 0.15s" }}>›</span>
               Grammar Reference
             </button>
             {showRef && (
-              <div style={{ marginTop: 20, fontFamily: "'IBM Plex Mono', monospace", fontSize: 12, color: "#5a5650", lineHeight: 2.2 }}>
+              <div style={{ marginTop: 20, fontSize: 14, color: "#5a5650", lineHeight: 2.2 }}>
                 {[
                   { label: "essere", content: "io sono · tu sei · lui/lei è · noi siamo · voi siete · loro sono" },
                   { label: "avere", content: "io ho · tu hai · lui/lei ha · noi abbiamo · voi avete · loro hanno" },
@@ -605,8 +651,8 @@
                   { label: "adjectives", content: "masc. sing: -o · fem. sing: -a · masc. pl: -i · fem. pl: -e" },
                   { label: "passato prossimo", content: "essere/avere (present) + past participle (-ato, -uto, -ito)" },
                 ].map((r, i) => (
-                  <div key={i} style={{ marginBottom: 10 }}>
-                    <span style={{ color: "#c8c2ba", fontSize: 9, textTransform: "uppercase", letterSpacing: 1.5 }}>{r.label}</span><br />
+                  <div key={i} style={{ marginBottom: 12 }}>
+                    <span style={{ color: "#c8c2ba", fontSize: 11, textTransform: "uppercase", letterSpacing: 1.5 }}>{r.label}</span><br />
                     {r.content}
                   </div>
                 ))}
@@ -614,7 +660,7 @@
             )}
           </div>
 
-          <div style={{ marginTop: 56, paddingTop: 20, borderTop: "1px solid #eae7e2", fontSize: 10, color: "#ddd8d0", fontFamily: "'IBM Plex Mono', monospace", textAlign: "center", letterSpacing: 3 }}>
+          <div style={{ marginTop: 56, paddingTop: 20, borderTop: "1px solid #e8e5df", fontSize: 12, color: "#ddd8d0", textAlign: "center", letterSpacing: 2 }}>
             in bocca al lupo
           </div>
         </div>
