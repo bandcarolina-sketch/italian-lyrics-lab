@@ -22,12 +22,21 @@
   <script type="text/babel">
     const { useState } = React;
 
+    /*
+     * ─── SPOTIFY TRACK IDs ───
+     * To get the correct ID for your region:
+     * 1. Open the song on Spotify (app or web)
+     * 2. Click ··· → Share → Embed track
+     * 3. Copy the ID from the src URL: .../embed/track/THIS_PART?utm...
+     * 4. Replace the spotifyId value below
+     */
+
     const SONGS = {
       planA: [
         {
           id: "a1", title: "Albachiara", artist: "Vasco Rossi", genre: "Rock",
           match: "Melodic rock ballad — Toto's softer side",
-          spotifyId: "64dQHjLtzZi5kLMvkehTOw", difficulty: "Beginner",
+          spotifyId: "53MYtv4tzLYg1hbu13Qbc0", difficulty: "Beginner",
           grammar: "Present tense (tu), adjectives, comparisons with 'come'",
           vocab: ["respirare", "addormentarsi", "risvegliarsi", "chiaro", "fresco", "guardare"],
           lines: [
@@ -143,7 +152,7 @@
         {
           id: "a5", title: "Vita spericolata", artist: "Vasco Rossi", genre: "Rock",
           match: "Luke Combs' everyman rebel energy",
-          spotifyId: "4mXnTwP9Jesmxin0byawJR", difficulty: "Beginner",
+          spotifyId: "5zd9EXZujflINL16eUHgqo", difficulty: "Beginner",
           grammar: "'Voglio' + infinitive, adjective agreement",
           vocab: ["volere", "vita", "spericolato", "vivere", "morire", "notte"],
           lines: [
@@ -442,12 +451,12 @@
               {/* Spotify embed */}
               <div style={{ marginBottom: 20 }}>
                 <iframe
-                  src={`https://open.spotify.com/embed/track/${song.spotifyId}?utm_source=generator&theme=0`}
-                  width="100%" height="80" frameBorder="0"
+                  style={{ borderRadius: 12 }}
+                  src={`https://open.spotify.com/embed/track/${song.spotifyId}?utm_source=generator`}
+                  width="100%" height="152" frameBorder="0"
+                  allowFullScreen=""
                   allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
                   loading="lazy"
-                  style={{ borderRadius: 6, border: "none" }}
-                  title={`${song.title} — ${song.artist}`}
                 />
                 <div style={{ fontSize: 12, color: "#c8c2ba", fontStyle: "italic", marginTop: 6 }}>{song.match}</div>
               </div>
